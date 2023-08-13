@@ -1,13 +1,18 @@
 package org.example.imclient;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 public class ImClient {
@@ -35,6 +40,8 @@ public class ImClient {
                 .addListener(future -> {
                     if (future.isSuccess()) {
                         System.out.println("连接服务器成功!");
+                        Channel channel = ((ChannelFuture) future).channel();
+                        inputFromConsole(channel);
                     } else if (retry == 0) {
                         System.out.println("重试次数已经用完，放弃重试连接!");
                     } else {
@@ -47,5 +54,23 @@ public class ImClient {
                                 .SECONDS);
                     }
                 });
+    }
+
+    /**
+     * 从控制台输入数据
+     *
+     * @param channel channel
+     */
+    private static void inputFromConsole(Channel channel) {
+        new Thread(() -> {
+            while (!Thread.interrupted()) {
+                //System.out.println("发送:");
+                Scanner scanner = new Scanner(System.in);
+                String line = scanner.nextLine();
+                ByteBuf byteBuf = channel.alloc().buffer();
+                byteBuf.writeBytes(line.getBytes(StandardCharsets.UTF_8));
+                channel.writeAndFlush(byteBuf);
+            }
+        }).start();
     }
 }
