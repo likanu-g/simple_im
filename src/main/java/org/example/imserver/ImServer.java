@@ -18,10 +18,10 @@ public class ImServer {
                 .childHandler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel ch) {
-
+                        ch.pipeline().addLast(new FirstServerHandler());
                     }
                 });
-        bind(serverBootstrap, 80);
+        bind(serverBootstrap, 8000);
     }
 
     private static void bind(final ServerBootstrap serverBootstrap, final int port) {

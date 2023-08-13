@@ -24,7 +24,7 @@ public class ImClient {
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel ch) {
-
+                        ch.pipeline().addLast(new FirstClientHandler());
                     }
                 });
         connect(bootstrap, "localhost", 8000, MAX_RETRY);
@@ -34,7 +34,7 @@ public class ImClient {
         bootstrap.connect(host, port)
                 .addListener(future -> {
                     if (future.isSuccess()) {
-                        System.out.println("connect success");
+                        System.out.println("连接服务器成功!");
                     } else if (retry == 0) {
                         System.out.println("重试次数已经用完，放弃重试连接!");
                     } else {
