@@ -10,7 +10,7 @@ import java.util.Date;
 public class FirstClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+    public void channelActive(ChannelHandlerContext ctx) {
         System.out.println("客户端向服务器发送数据");
         //分配内存缓冲区
         ByteBuf byteBuf = ctx.alloc().buffer();
@@ -23,7 +23,7 @@ public class FirstClientHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+    public void channelRead(ChannelHandlerContext ctx, Object msg) {
         ByteBuf byteBuf = (ByteBuf) msg;
         System.out.println(new Date() + "客户端接收到了服务端发来的数据 -> " + byteBuf.toString(StandardCharsets.UTF_8));
     }
